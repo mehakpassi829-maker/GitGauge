@@ -12,3 +12,12 @@ def analyze(username: str):
         "repo_count": len(repos),
         "repos": repos
     }
+
+from fastapi import APIRouter
+from app.services.analysis_service import run_full_analysis
+
+router = APIRouter()
+
+@router.get("/analyze/{username}")
+async def analyze_user(username: str):
+    return await run_full_analysis(username)

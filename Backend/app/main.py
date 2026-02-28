@@ -1,12 +1,14 @@
-from fastapi import FastAPI
 from app.api.routes_analysis import router as analysis_router
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 
-app = FastAPI(
-    title="WorkDNA API",
-    description="Behavioral coding intelligence from GitHub",
-    version="1.0"
-)
+app = FastAPI()
 
+templates = Jinja2Templates(directory="templates")
+@app.get("/", response_class=HTMLResponse)
+def home(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 @app.get("/health")
 def health():
     return {"status": "WorkDNA Running"}
