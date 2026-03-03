@@ -3,16 +3,66 @@
 <head>
     <title>WorkDNA Analyzer</title>
     <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-    <h1>GitHub WorkDNA Analyzer</h1>
+<div class="container">
 
-    <input type="text" id="username" placeholder="Enter GitHub Username">
-    <button onclick="analyzeUser()">Analyze</button>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>🧬 WorkDNA</h2>
+        <button onclick="toggleMode()">Switch Mode</button>
+        <ul>
+            <li>Dashboard</li>
+            <li>Commit Intelligence</li>
+            <li>Tech Intelligence</li>
+            <li>Project Complexity</li>
+            <li>Documentation</li>
+            <li>Growth Velocity</li>
+        </ul>
+    </div>
 
-    <div id="result"></div>
+    <!-- Main -->
+    <div class="main">
+        <h1>Developer Intelligence Dashboard</h1>
 
-    <script src="script.js"></script>
+        <div class="search-box">
+            <input type="text" id="username" placeholder="Enter GitHub Username">
+            <button onclick="analyzeUser()">Analyze</button>
+        </div>
+
+        <div id="result" class="hidden">
+
+            <!-- Score + Radar -->
+            <div class="top-section">
+                <canvas id="scoreCanvas" width="180" height="180"></canvas>
+                <canvas id="radarChart"></canvas>
+            </div>
+
+            <!-- User Info -->
+            <div id="userInfo"></div>
+
+            <!-- Intelligence Cards -->
+            <div class="intelligence-grid">
+                <div class="intel-card"><h3>📊 Commit</h3><p id="commitScore"></p></div>
+                <div class="intel-card"><h3>🧠 Tech</h3><p id="techScore"></p></div>
+                <div class="intel-card"><h3>📁 Project</h3><p id="projectScore"></p></div>
+                <div class="intel-card"><h3>📝 Docs</h3><p id="docScore"></p></div>
+                <div class="intel-card"><h3>🔥 Growth</h3><p id="growthScore"></p></div>
+            </div>
+
+            <!-- Insights -->
+            <div class="insight-section">
+                <h2>🧠 AI Insights</h2>
+                <div id="strengths"></div>
+                <div id="weaknesses"></div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', path='js/script.js') }}"></script>
 </body>
 </html>
