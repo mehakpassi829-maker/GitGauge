@@ -16,6 +16,13 @@ body {
     padding: 20px;
     height: 100vh;
 }
+.logo{
+    height: 30%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    background-color: #0f172a;
+}
 
 .sidebar h2 {
     color: #3b82f6;
@@ -111,3 +118,4 @@ body {
 .hidden {
     display: none;
 }
+
