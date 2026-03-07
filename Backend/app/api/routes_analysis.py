@@ -4,6 +4,7 @@ from app.services.analysis_service import run_full_analysis
 from app.analyzers.commit_analyzer import analyze_commits
 from app.analyzers.language_analyzer import analyze_languages
 from app.services.scoring_service import calculate_hireability_score
+from app.analyzers.engineering_analyzer import analyze as analyze_engineering
 
 router = APIRouter()
 
@@ -17,6 +18,7 @@ def analyze(username: str):
         commit_score=analyze_commits_result.get("commit_score", 0),
         language_score=analyze_languages_result.get("language_score", 0),
     )
+    engineering_analysis_result = analyze_engineering(repos)
 
     return {
         "username": username,
@@ -24,7 +26,8 @@ def analyze(username: str):
         "repos": repos,
         "commit_analysis": analyze_commits_result,
         "language_analysis": analyze_languages_result,
-        "hireability_score": hireability_score
+        "hireability_score": hireability_score,
+        "engineering_analysis": engineering_analysis_result
 
         
     }
