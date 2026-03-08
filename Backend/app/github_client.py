@@ -7,13 +7,11 @@ def fetch_repositories(username: str):
 
     headers = {}
 
-    # Add token only if it exists
     if GITHUB_TOKEN:
         headers["Authorization"] = f"token {GITHUB_TOKEN}"
 
     response = requests.get(url, headers=headers)
 
-    # Debug info (very helpful if something breaks)
     if response.status_code != 200:
         print("GitHub API ERROR")
         print("Status Code:", response.status_code)
@@ -22,10 +20,12 @@ def fetch_repositories(username: str):
 
     repos_data = response.json()
 
-    # Return simplified repo information
     return [
         {
             "name": repo["name"],
+            "size": repo["size"],
+            "forks_count": repo["forks_count"],
+            "watchers_count": repo["watchers_count"],
             "stars": repo["stargazers_count"],
             "language": repo["language"],
         }

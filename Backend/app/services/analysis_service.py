@@ -4,7 +4,6 @@ from app.services.github_service import fetch_user_repos
 from app.analyzers.commit_analyzer import analyze_commits
 from app.analyzers.language_analyzer import analyze_languages
 from app.services.scoring_service import calculate_hireability_score
-from app.analyzers.algorithm_analyzer import AlgorithmAnalyzer 
 
 
 async def run_full_analysis(username: str):
@@ -34,14 +33,10 @@ async def run_full_analysis(username: str):
         language_score=language_result.get("language_score", 0),
     )
 
-    algorithm_analyzer = AlgorithmAnalyzer()
-    algorithm_result = algorithm_analyzer.analyze(repos)
-
     # 5️⃣ Final Structured Response
     return {
         "username": username,
         "commit_intelligence": commit_result,
         "language_intelligence": language_result,
-        "hireability_score": hireability_score,
-        "algorithm_analysis": algorithm_result,
+        "hireability_score": hireability_score
     }

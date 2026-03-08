@@ -1,42 +1,60 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
+
 from app.github_client import fetch_repositories
-from app.services.analysis_service import run_full_analysis
 from app.analyzers.commit_analyzer import analyze_commits
 from app.analyzers.language_analyzer import analyze_languages
-from app.services.scoring_service import calculate_hireability_score
 from app.analyzers.engineering_analyzer import analyze as analyze_engineering
+from app.services.scoring_service import calculate_hireability_score
 
 router = APIRouter()
 
+
 @router.get("/analyze/{username}")
-def analyze(username: str):
-    repos = fetch_repositories(username)
-    analysis_result = run_full_analysis(username)
-    analyze_commits_result = analyze_commits(repos)
-    analyze_languages_result = analyze_languages(repos) 
-    hireability_score = calculate_hireability_score(
-        commit_score=analyze_commits_result.get("commit_score", 0),
-        language_score=analyze_languages_result.get("language_score", 0),
-    )
-    engineering_analysis_result = analyze_engineering(repos)
+def analyze_user(username: str):
 
-    return {
-        "username": username,
-        "repo_count": len(repos),
-        "repos": repos,
-        "commit_analysis": analyze_commits_result,
-        "language_analysis": analyze_languages_result,
-        "hireability_score": hireability_score,
-        "engineering_analysis": engineering_analysis_result
+    try:
+        repos = fetch_repositories(username)
 
-        
-    }
+        if not repos:
+            raise HTTPException(
+                status_code=404,
+                detail="No repositories found"
+            )
 
-# from fastapi import APIRouter
+        # Analyses
+        commit_result = analyze_commits(repos)
+        language_result = analyze_languages(repos)
+        engineering_result = analyze_engineering(repos)
 
+        # Hireability Score
+        hireability_score = calculate_hireability_score(
+            commit_score=commit_result.get("commit_score", 0),
+            language_score=language_result.get("language_score", 0),
+        )
 
-# router = APIRouter()
+        # Clean repo list for frontend
+        repo_list = []
 
-# @router.get("/analyze/{username}")
-# async def analyze_user(username: str):
-#     return await run_full_analysis(username)
+        for repo in repos:
+            repo_list.append({
+                "name": repo.get("name"),
+                "url": repo.get("html_url"),
+                "stars": repo.get("stargazers_count", 0),
+                "forks": repo.get("forks_count", 0)
+            })
+
+        return {
+            "username": username,                                                               
+            "repo_count": len(repos),
+            "repos": repo_list,
+            "commit_analysis": commit_result,
+            "language_analysis": language_result,
+            "engineering_analysis": engineering_result,
+            "hireability_score": hireability_score
+        }
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
