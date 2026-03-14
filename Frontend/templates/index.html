@@ -3,7 +3,9 @@
 
 <head>
     <title>WorkDNA Analyzer</title>
-    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}"> -->
+    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}?v={{ time }}">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="shortcut icon" href="{{ url_for('static', path='img/logo.png') }}" type="image/x-icon">
@@ -15,13 +17,13 @@
 
         <!-- Sidebar -->
         <div class="sidebar">
-            
+
             <ul>
                 <li>
                     <div class="logo" background-color="black">
-                <img src="{{ url_for('static', path='img/logo.png') }}" alt="" height="50%" width="50%">
-                <!-- <button onclick="toggleMode()">Switch Mode</button> -->
-            </div>
+                        <img src="{{ url_for('static', path='img/logo.png') }}" alt="" height="50%" width="50%">
+                        <!-- <button onclick="toggleMode()">Switch Mode</button> -->
+                    </div>
                 </li>
                 <li>Dashboard</li>
                 <li>Commit Intelligence</li>
@@ -37,7 +39,7 @@
             <h1>Developer Intelligence Dashboard</h1>
 
             <div class="search-box">
-                <input type="text" id="username" placeholder="Enter GitHub Username">
+                <input type="text" id="username" placeholder="Enter GitHub Username" autofocus>
                 <button onclick="analyzeUser()">Analyze</button>
             </div>
 
@@ -54,40 +56,56 @@
 
                 <!-- Intelligence Cards -->
                 <div class="intelligence-grid">
-                    <div class="intel-card">
-                        <h3>📊 Commit</h3>
+                    <div class="intel-card" id="commit_Analyzer"
+                        data-tooltip="Analyzes commit frequency, consistency and contribution patterns.">
+                        <h3>Commit Analyzer</h3>
                         <p id="commitScore"></p>
+                        <div class="popup"></div>
                     </div>
-                    <div class="intel-card">
-                        <h3>🧠 Tech</h3>
+
+                    <div class="intel-card"  data-tooltip="Evaluates architecture design patterns and code structure.">
+                        <h3>Architech Intelligence</h3>
+                        <p id="archScore"></p>
+                        <div class="popup"></div>
+                    </div>
+
+                    <div class="intel-card" data-tooltip="Analyzes algorithm usage and computational efficiency.">
+                        <h3>Algorithm Intelligence</h3>
                         <p id="techScore"></p>
+                        <div class="popup"></div>
                     </div>
-                    <div class="intel-card">
-                        <h3>📁 Project</h3>
-                        <p id="projectScore"></p>
+
+                    <div class="intel-card" data-tooltip="Measures collaboration across repositories and contributors.">
+                        <h3>Collaboration Analyzer</h3>
+                        <p id="collaboration_score"></p>
+                        <div class="popup">..</div>
                     </div>
-                    <div class="intel-card">
-                        <h3>📝 Docs</h3>
+
+                    <div class="intel-card" data-tooltip="Evaluates documentation quality and README clarity.">
+                        <h3>Documentation Analyzer</h3>
                         <p id="docScore"></p>
+                        <div class="popup">..</div>
                     </div>
-                    <div class="intel-card">
-                        <h3>🔥 Growth</h3>
+
+                    <div class="intel-card" data-tooltip="Measures developer growth and learning velocity.">
+                        <h3>Developer Intelligence</h3>
                         <p id="growthScore"></p>
+                        <div class="popup"></div>
                     </div>
-                </div>
 
-                <!-- Insights -->
-                <div class="insight-section">
-                    <h2>🧠 AI Insights</h2>
-                    <div id="strengths"></div>
-                    <div id="weaknesses"></div>
-                </div>
 
+                    <!-- Insights -->
+                    <div class="insight-section">
+                        <h2>🧠 AI Insights</h2>
+                        <div id="strengths"></div>
+                        <div id="weaknesses"></div>
+                    </div>
+
+                </div>
             </div>
         </div>
-    </div>
 
-    <script src="{{ url_for('static', path='js/script.js') }}"></script>
+        <script src="{{ url_for('static', path='js/script.js') }}"></script>
 </body>
 
 </html>
