@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>WorkDNA Analyzer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}"> -->
+    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}?v={{ time }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="shortcut icon" href="{{ url_for('static', path='img/logo.png') }}" type="image/x-icon">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+
+            <ul>
+                <li>
+                    <div class="logo" background-color="black">
+                        <img src="{{ url_for('static', path='img/logo.png') }}" alt="" height="50%" width="50%">
+                        <!-- <button onclick="toggleMode()">Switch Mode</button> -->
+                    </div>
+                </li>
+                <li>Dashboard</li>
+                <li>Commit Intelligence</li>
+                <li>Tech Intelligence</li>
+                <li>Project Complexity</li>
+                <li>Documentation</li>
+                <li>Growth Velocity</li>
+            </ul>
+        </div>
+
+        <!-- Main -->
+        <div class="main">
+            <h1>Developer Intelligence Dashboard</h1>
+
+            {% block content %}{% endblock %}
+
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', path='js/script.js') }} "></script>
+</body>
+
+</html>

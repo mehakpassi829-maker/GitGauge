@@ -1,3 +1,4 @@
+console.log("Script loaded");
 let recruiterMode = false;
 let radarChartInstance = null;
 
@@ -25,17 +26,16 @@ async function analyzeUser() {
         console.log("API Response:", data);
 
         // Hireability Score
-        const hireScore = data.hireability_score;
+        const hireScore = data.hireability_score || 0;
         drawScore(hireScore);
 
         // Scores
-        const commit = data.commit_analysis;
-        const engineering = data.engineering_analysis;
+        const commit = data.commit_analysis || {};
+        const engineering = data.engineering_analysis || {};
 
-        const commitScore = commit.commit_score;
-        const engineeringScore = engineering.engineering_score;
-        const collaborationScore = engineering.collaboration_score;
-
+        const commitScore = commit.commit_score || 0;
+        const engineeringScore = engineering.engineering_score || 0;
+        const collaborationScore = engineering.collaboration_score || 0;
         // Temporary demo values
         const docScore = Math.floor(Math.random() * 30) + 60;
         const growthScore = Math.floor(Math.random() * 30) + 60;
@@ -55,24 +55,24 @@ async function analyzeUser() {
             growthScore
         );
 
-        generateInsights(
-            commitScore,
-            engineeringScore,
-            collaborationScore,
-            docScore,
-            growthScore
-        );
+        // generateInsights(
+        //     commitScore,
+        //     engineeringScore,
+        //     collaborationScore,
+        //     docScore,
+        //     growthScore
+        // );
 
         // Repo List
         let reposList = "";
 
-        if (data.repos && data.repos.length > 0) {
+    if (data.repos && Array.isArray(data.repos) && data.repos.length > 0) {
 
-            reposList = "<ul>";
+        reposList = "<ul>";
 
-            data.repos.forEach(repo => {
+        data.repos.forEach(repo => {
 
-                reposList += `
+            reposList += `
                     <li>
                         <a href="${repo.url}" target="_blank">
                             ${repo.name}
@@ -80,32 +80,32 @@ async function analyzeUser() {
                     </li>
                 `;
 
-            });
+        });
 
-            reposList += "</ul>";
+        reposList += "</ul>";
 
-        } else {
+    } else {
 
-            reposList = "<p>No repositories found.</p>";
+        reposList = "<p>No repositories found.</p>";
 
-        }
+    }
 
-        userInfo.innerHTML = `
+    userInfo.innerHTML = `
             <h2>${data.username}</h2>
             <p><strong>Total Repositories:</strong> ${data.repo_count}</p>
             <h3>Repositories:</h3>
             ${reposList}
         `;
 
-        resultDiv.classList.remove("hidden");
+    resultDiv.classList.remove("hidden");
 
-    } catch (error) {
+} catch (error) {
 
-        console.error("API error:", error);
-        alert("Failed to analyze user. Check backend server.");
+    alert("Failed to analyze user. Check backend server.");
+    console.error("API error:", error);
 
-    }
 }
+
 
 function drawScore(score) {
 
@@ -118,8 +118,8 @@ function drawScore(score) {
 
     let color =
         score < 50 ? "#ef4444"
-        : score < 75 ? "#f59e0b"
-        : "#10b981";
+            : score < 75 ? "#f59e0b"
+                : "#10b981";
 
     let current = 0;
 
@@ -134,8 +134,8 @@ function drawScore(score) {
         ctx.stroke();
 
         ctx.beginPath();
-        ctx.arc(centerX, centerY, radius, -Math.PI/2,
-            (-Math.PI/2)+(2*Math.PI*current/100));
+        ctx.arc(centerX, centerY, radius, -Math.PI / 2,
+            (-Math.PI / 2) + (2 * Math.PI * current / 100));
         ctx.strokeStyle = color;
         ctx.lineWidth = 10;
         ctx.stroke();
@@ -144,7 +144,7 @@ function drawScore(score) {
         ctx.font = "24px Arial";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(current+"%", centerX, centerY);
+        ctx.fillText(current + "%", centerX, centerY);
 
         if (current < score) {
             current++;
@@ -251,4 +251,4 @@ function generateInsights(commit, engineering, collaboration, docs, growth) {
         "<h3>Weaknesses:</h3> " +
         (weaknesses.length ? weaknesses.join(", ") : "None");
 
-}
+}}

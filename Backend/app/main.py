@@ -17,4 +17,12 @@ def home(request: Request):
 def health():
     return {"status": "WorkDNA Running"}
 
+@app.get("/commit")
+def commit(request: Request):
+    return templates.TemplateResponse("commit.html", {"request": request , "time": time.time()})
+
+
 app.include_router(analysis_router)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0", port=8000)
