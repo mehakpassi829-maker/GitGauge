@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException
 
-from app.github_client import fetch_repositories
-from app.analyzers.commit_analyzer import analyze_commits
-from app.analyzers.language_analyzer import analyze_languages
-from app.analyzers.engineering_analyzer import analyze as analyze_engineering
-from app.services.scoring_service import calculate_hireability_score
+from Backend.app.github_client import fetch_repositories
+from Backend.app.analyzers.commit_analyzer import analyze_commits
+from Backend.app.analyzers.language_analyzer import analyze_languages
+from Backend.app.analyzers.engineering_analyzer import analyze as analyze_engineering
+from Backend.app.services.scoring_service import calculate_hireability_score
 
 router = APIRouter()
 

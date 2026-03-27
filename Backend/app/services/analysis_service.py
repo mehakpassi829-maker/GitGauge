@@ -1,9 +1,9 @@
 # app/services/analysis_service.py
 
-from app.services.github_service import fetch_user_repos
-from app.analyzers.commit_analyzer import analyze_commits
-from app.analyzers.language_analyzer import analyze_languages
-from app.services.scoring_service import calculate_hireability_score
+from Backend.app.services.github_service import fetch_user_repos
+from Backend.app.analyzers.commit_analyzer import analyze_commits
+from Backend.app.analyzers.language_analyzer import analyze_languages
+from Backend.app.services.scoring_service import calculate_hireability_score
 
 
 async def run_full_analysis(username: str):
