@@ -1,60 +1,72 @@
 from fastapi import APIRouter, HTTPException
-
-from Backend.app.github_client import fetch_repositories
-from Backend.app.analyzers.commit_analyzer import analyze_commits
-from Backend.app.analyzers.language_analyzer import analyze_languages
-from Backend.app.analyzers.engineering_analyzer import analyze as analyze_engineering
-from Backend.app.services.scoring_service import calculate_hireability_score
+from app.services.github_service import fetch_user_repos, fetch_user_info
+from app.analyzers.commit_analyzer import analyze_commits
+from app.analyzers.architect_analyzer import analyze_architect
+from app.analyzers.algorithm_analyzer import analyze_algorithm
+from app.analyzers.collaboration_analyzer import analyze_collaboration
+from app.analyzers.documentation_analyzer import analyze_documentation
+from app.analyzers.developer_analyzer import analyze_developer
+from app.services.scoring_service import calculate_hireability_score
+import asyncio
 
 router = APIRouter()
 
-
 @router.get("/analyze/{username}")
 def analyze_user(username: str):
-
     try:
-        repos = fetch_repositories(username)
+        # Fetch data
+        repos     = asyncio.run(fetch_user_repos(username))
+        user_info = asyncio.run(fetch_user_info(username))
 
         if not repos:
-            raise HTTPException(
-                status_code=404,
-                detail="No repositories found"
-            )
+            raise HTTPException(status_code=404, detail="No repositories found")
 
-        # Analyses
-        commit_result = analyze_commits(repos)
-        language_result = analyze_languages(repos)
-        engineering_result = analyze_engineering(repos)
+        # Run all 6 analyzers
+        commit        = analyze_commits(repos)
+        architect     = analyze_architect(repos)
+        algorithm     = analyze_algorithm(repos)
+        collaboration = analyze_collaboration(repos, user_info)
+        documentation = analyze_documentation(repos)
+        developer     = analyze_developer(repos, user_info)
 
-        # Hireability Score
-        hireability_score = calculate_hireability_score(
-            commit_score=commit_result.get("commit_score", 0),
-            language_score=language_result.get("language_score", 0),
+        # Final hireability score
+        hireability = calculate_hireability_score(
+            commit["commit_score"],
+            architect["architect_score"],
+            algorithm["algorithm_score"],
+            collaboration["collaboration_score"],
+            documentation["documentation_score"],
+            developer["developer_score"],
         )
 
-        # Clean repo list for frontend
-        repo_list = []
-
-        for repo in repos:
-            repo_list.append({
-                "name": repo.get("name"),
-                "url": repo.get("html_url"),
-                "stars": repo.get("stargazers_count", 0),
-                "forks": repo.get("forks_count", 0)
-            })
+        # Clean repo list
+        repo_list = [{
+         "name":        r.get("name"),
+         "url":         r.get("html_url"),
+         "stars":       r.get("stargazers_count", 0),
+         "forks":       r.get("forks_count", 0),
+         "language":    r.get("language") or "Unknown",
+         "description": r.get("description") or "",
+} for r in repos]
 
         return {
-            "username": username,                                                               
+            "username":   username,
+            "user_info":  user_info,
             "repo_count": len(repos),
-            "repos": repo_list,
-            "commit_analysis": commit_result,
-            "language_analysis": language_result,
-            "engineering_analysis": engineering_result,
-            "hireability_score": hireability_score
+            "repos":      repo_list,
+            "hireability": hireability,
+            "analyzers": {
+                "commit":        commit,
+                "architect":     architect,
+                "algorithm":     algorithm,
+                "collaboration": collaboration,
+                "documentation": documentation,
+                "developer":     developer,
+            }
         }
 
+    except HTTPException:
+        
+        raise HTTPException(status_code=404, detail="No repositories found")
     except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=str(e)
-        )
+        raise HTTPException(status_code=500, detail=str(e))

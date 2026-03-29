@@ -1,42 +1,45 @@
-# app/services/analysis_service.py
-
-from Backend.app.services.github_service import fetch_user_repos
-from Backend.app.analyzers.commit_analyzer import analyze_commits
-from Backend.app.analyzers.language_analyzer import analyze_languages
-from Backend.app.services.scoring_service import calculate_hireability_score
-
+from app.services.github_service import fetch_user_repos, fetch_user_info
+from app.analyzers.commit_analyzer import analyze_commits
+from Backend.app.analyzers.architect_analyzer import analyze_architect
+from app.analyzers.algorithm_analyzer import analyze_algorithm
+from app.analyzers.collaboration_analyzer import analyze_collaboration
+from app.analyzers.documentation_analyzer import analyze_documentation
+from app.analyzers.developer_analyzer import analyze_developer
+from app.services.scoring_service import calculate_hireability_score
 
 async def run_full_analysis(username: str):
-    """
-    Main orchestration function.
-    This coordinates all intelligence engines.
-    """
-
-    # 1️⃣ Fetch repositories
-    repos = await fetch_user_repos(username)
+    repos     = await fetch_user_repos(username)
+    user_info = await fetch_user_info(username)
 
     if not repos:
-        return {
-            "username": username,
-            "error": "No repositories found"
-        }
+        return {"username": username, "error": "No repositories found"}
 
-    # 2️⃣ Run Commit Intelligence
-    commit_result = analyze_commits(repos)
+    commit        = analyze_commits(repos)
+    architect     = analyze_architect(repos)
+    algorithm     = analyze_algorithm(repos)
+    collaboration = analyze_collaboration(repos, user_info)
+    documentation = analyze_documentation(repos)
+    developer     = analyze_developer(repos, user_info)
 
-    # 3️⃣ Run Language Intelligence
-    language_result = analyze_languages(repos)
-
-    # 4️⃣ Calculate Final Hireability Score
-    hireability_score = calculate_hireability_score(
-        commit_score=commit_result.get("commit_score", 0),
-        language_score=language_result.get("language_score", 0),
+    hireability = calculate_hireability_score(
+        commit["commit_score"],
+        architect["architect_score"],
+        algorithm["algorithm_score"],
+        collaboration["collaboration_score"],
+        documentation["documentation_score"],
+        developer["developer_score"],
     )
 
-    # 5️⃣ Final Structured Response
     return {
-        "username": username,
-        "commit_intelligence": commit_result,
-        "language_intelligence": language_result,
-        "hireability_score": hireability_score
+        "username":      username,
+        "user_info":     user_info,
+        "hireability":   hireability,
+        "analyzers": {
+            "commit":        commit,
+            "architect":     architect,
+            "algorithm":     algorithm,
+            "collaboration": collaboration,
+            "documentation": documentation,
+            "developer":     developer,
+        }
     }

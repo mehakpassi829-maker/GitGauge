@@ -1,66 +1,41 @@
 from datetime import datetime
 from collections import defaultdict
+import re
 
 def analyze_commits(repos):
-    """
-    Advanced estimation of commit behavior using repository metadata
-    """
-
-    total_repos = len(repos)
-
-    if total_repos == 0:
-        return {
-            "total_repos": 0,
-            "estimated_commits": 0,
-            "consistency_score": 0,
-            "commits_per_week": 0,
-            "active_repos": 0,
-            "inactive_repos": 0,
-            
-        }
+    if not repos:
+        return {"commit_score": 0, "sub_metrics": {}, "details": {}}
 
     now = datetime.utcnow()
-
     active_repos = 0
-    inactive_repos = 0
-    estimated_commits = 0
-
     weekly_activity = defaultdict(int)
-    time_pattern = {
-        "morning": 0,
-        "afternoon": 0,
-        "night": 0
-    }
+    time_pattern = {"morning": 0, "afternoon": 0, "night": 0}
+    message_quality_scores = []
+    streaks = []
+    total_estimated = 0
 
     for repo in repos:
         pushed_at = repo.get("pushed_at")
         created_at = repo.get("created_at")
-
         if not pushed_at or not created_at:
             continue
 
-        pushed_date = datetime.strptime(pushed_at, "%Y-%m-%dT%H:%M:%SZ")
-        created_date = datetime.strptime(created_at, "%Y-%m-%dT%H:%M:%SZ")
+        pushed = datetime.strptime(pushed_at, "%Y-%m-%dT%H:%M:%SZ")
+        created = datetime.strptime(created_at, "%Y-%m-%dT%H:%M:%SZ")
 
-        repo_age_days = (now - created_date).days
-        last_active_days = (now - pushed_date).days
+        age_days = max((now - created).days, 1)
+        last_active = (now - pushed).days
 
-        # 🔹 Estimate commits based on repo age
-        repo_commits = max(1, repo_age_days // 10)
-        estimated_commits += repo_commits
+        repo_commits = max(1, age_days // 10)
+        total_estimated += repo_commits
 
-        # 🔹 Active vs inactive
-        if last_active_days <= 30:
+        if last_active <= 30:
             active_repos += 1
-        else:
-            inactive_repos += 1
 
-        # 🔹 Weekly estimation (based on last push)
-        week_key = f"{pushed_date.year}-W{pushed_date.isocalendar()[1]}"
+        week_key = f"{pushed.year}-W{pushed.isocalendar()[1]}"
         weekly_activity[week_key] += repo_commits
 
-        # 🔹 Time pattern (based on push time)
-        hour = pushed_date.hour
+        hour = pushed.hour
         if 6 <= hour < 12:
             time_pattern["morning"] += 1
         elif 12 <= hour < 18:
@@ -68,22 +43,52 @@ def analyze_commits(repos):
         else:
             time_pattern["night"] += 1
 
-    # 🔹 Consistency score (based on active repos)
-    consistency_score = min(100, active_repos * 10)
+        # Message quality: estimate from repo name & description
+        desc = repo.get("description") or ""
+        name = repo.get("name") or ""
+        score = 0
+        if len(desc) > 20: score += 40
+        if len(desc) > 50: score += 20
+        if not re.search(r'\b(fix|update|test|misc|wip)\b', desc.lower()): score += 20
+        if any(c.isupper() for c in name): score += 20
+        message_quality_scores.append(min(score, 100))
 
-    # 🔹 Avg commits per week
-    commits_per_week = (
-        sum(weekly_activity.values()) // len(weekly_activity)
-        if weekly_activity else 0
+        streaks.append(min(age_days // 7, 30))
+
+    total_repos = len(repos)
+    active_weeks = len(weekly_activity)
+    total_weeks = max((now - datetime.strptime(repos[-1]["created_at"], "%Y-%m-%dT%H:%M:%SZ")).days // 7, 1)
+
+    # Sub-metric scores (each out of their weight)
+    frequency   = min(100, (total_estimated / max(total_repos, 1)) * 3)
+    consistency = min(100, (active_weeks / total_weeks) * 100)
+    active_days = min(100, (active_repos / total_repos) * 100)
+    msg_quality = sum(message_quality_scores) / len(message_quality_scores) if message_quality_scores else 0
+    time_dist   = min(100, max(time_pattern.values()) / max(sum(time_pattern.values()), 1) * 100)
+    streak      = min(100, (max(streaks) / 30) * 100) if streaks else 0
+
+    commit_score = round(
+        frequency   * 0.20 +
+        consistency * 0.25 +
+        active_days * 0.15 +
+        msg_quality * 0.20 +
+        time_dist   * 0.10 +
+        streak      * 0.10
     )
 
     return {
-        "total_repos": total_repos,
-        "active_repos": active_repos,
-        "inactive_repos": inactive_repos,
-        "estimated_commits": estimated_commits,
-        "commits_per_week": commits_per_week,
-        "consistency_score": consistency_score,
-        "weekly_distribution": dict(weekly_activity),
-        "time_pattern": time_pattern
+        "commit_score": min(commit_score, 100),
+        "sub_metrics": {
+            "frequency":   round(frequency),
+            "consistency": round(consistency),
+            "active_days": round(active_days),
+            "msg_quality": round(msg_quality),
+            "time_dist":   round(time_dist),
+            "streak":      round(streak),
+        },
+        "details": {
+            "active_repos": active_repos,
+            "estimated_commits": total_estimated,
+            "time_pattern": time_pattern,
+        }
     }
