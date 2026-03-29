@@ -1,70 +1,124 @@
 {% extends "base.html" %}
 {% block content %}
 
-
 <div class="search-box">
-    <input type="text" id="username" placeholder="Enter GitHub Username" autofocus>
+    <input type="text" id="username" placeholder="github username" autofocus>
     <button onclick="analyzeUser()">Analyze</button>
+</div>
+
+<div id="loading" class="hidden">
+    <div class="loader"></div>
+    <p>Analyzing profile...</p>
 </div>
 
 <div id="result" class="hidden">
 
-    <!-- Score + Radar -->
+    <!-- Row 1: Score + User Info + Radar -->
     <div class="top-section">
-        <canvas id="scoreCanvas" width="180" height="180"></canvas>
-        <canvas id="radarChart"></canvas>
+
+        <div class="score-ring-wrap">
+            <div class="score-ring-inner">
+                <canvas id="scoreCanvas" width="140" height="140"></canvas>
+                <div class="score-center">
+                    <span id="scoreNumber">0</span>
+                    <small>/ 100</small>
+                </div>
+            </div>
+            <div class="score-lbl">Hireability Score</div>
+            <div id="scoreGrade">—</div>
+        </div>
+
+        <div id="userInfo"></div>
+
+        <div class="radar-wrap">
+            <canvas id="radarChart"></canvas>
+        </div>
+
     </div>
 
-    <!-- User Info -->
-    <div id="userInfo"></div>
-
-    <!-- Intelligence Cards -->
+    <!-- Row 2: Analyzer Cards -->
+    <div class="section-title">Analyzer Breakdown</div>
     <div class="intelligence-grid">
-        <div class="intel-card" id="commit_Analyzer"
-            data-tooltip="Analyzes commit frequency, consistency and contribution patterns.">
+
+        <div class="intel-card" data-analyzer="commit">
             <h3>Commit Analyzer</h3>
-            <p id="commitScore"></p>
-            <div class="popup"></div>
+            <p id="commitScore">—</p>
+            <div class="mini-bar-wrap"><div class="mini-bar" id="commitBar" style="background:var(--c1)"></div></div>
+            <span class="card-click-hint">click to expand →</span>
         </div>
 
-        <div class="intel-card" data-tooltip="Evaluates architecture design patterns and code structure.">
-            <h3>Architech Intelligence</h3>
-            <p id="archScore"></p>
-            <div class="popup"></div>
+        <div class="intel-card" data-analyzer="architect">
+            <h3>Architect Analyzer</h3>
+            <p id="archScore">—</p>
+            <div class="mini-bar-wrap"><div class="mini-bar" id="archBar" style="background:var(--c2)"></div></div>
+            <span class="card-click-hint">click to expand →</span>
         </div>
 
-        <div class="intel-card" data-tooltip="Analyzes algorithm usage and computational efficiency.">
-            <h3>Algorithm Intelligence</h3>
-            <p id="techScore"></p>
-            <div class="popup"></div>
+        <div class="intel-card" data-analyzer="algorithm">
+            <h3>Algorithm Analyzer</h3>
+            <p id="techScore">—</p>
+            <div class="mini-bar-wrap"><div class="mini-bar" id="techBar" style="background:var(--c3)"></div></div>
+            <span class="card-click-hint">click to expand →</span>
         </div>
 
-        <div class="intel-card" data-tooltip="Measures collaboration across repositories and contributors.">
+        <div class="intel-card" data-analyzer="collaboration">
             <h3>Collaboration Analyzer</h3>
-            <p id="collaboration_score"></p>
-            <div class="popup">..</div>
+            <p id="collaboration_score">—</p>
+            <div class="mini-bar-wrap"><div class="mini-bar" id="collabBar" style="background:var(--c4)"></div></div>
+            <span class="card-click-hint">click to expand →</span>
         </div>
 
-        <div class="intel-card" data-tooltip="Evaluates documentation quality and README clarity.">
+        <div class="intel-card" data-analyzer="documentation">
             <h3>Documentation Analyzer</h3>
-            <p id="docScore"></p>
-            <div class="popup">..</div>
+            <p id="docScore">—</p>
+            <div class="mini-bar-wrap"><div class="mini-bar" id="docBar" style="background:var(--c5)"></div></div>
+            <span class="card-click-hint">click to expand →</span>
         </div>
 
-        <div class="intel-card" data-tooltip="Measures developer growth and learning velocity.">
-            <h3>Developer Intelligence</h3>
-            <p id="growthScore"></p>
-            <div class="popup"></div>
-        </div>
-
-
-        <!-- Insights -->
-        <div class="insight-section">
-            <h2>🧠 AI Insights</h2>
-            <div id="strengths"></div>
-            <div id="weaknesses"></div>
+        <div class="intel-card" data-analyzer="developer">
+            <h3>Developer Analyzer</h3>
+            <p id="growthScore">—</p>
+            <div class="mini-bar-wrap"><div class="mini-bar" id="devBar" style="background:var(--c6)"></div></div>
+            <span class="card-click-hint">click to expand →</span>
         </div>
 
     </div>
+
+    <!-- Row 3: Breakdown Panel -->
+    <div id="breakdownPanel" class="hidden">
+        <div class="breakdown-header">
+            <h3 id="breakdownTitle"></h3>
+            <span id="breakdownScore"></span>
+            <button onclick="closeBreakdown()">✕</button>
+        </div>
+        <div id="breakdownMetrics"></div>
+    </div>
+
+    <!-- Row 4: Insights -->
+    <div class="insight-section">
+        <div class="section-title">AI Insights</div>
+        <div class="insights-grid">
+            <div class="insight-card strength-card">
+                <h4>✦ Strengths</h4>
+                <div id="strengths"></div>
+            </div>
+            <div class="insight-card weakness-card">
+                <h4>↯ Areas to Improve</h4>
+                <div id="weaknesses"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 5: Repositories -->
+    <div class="repo-section">
+        <div class="section-title">Repositories</div>
+        <div id="repoList" class="repo-grid"></div>
+    </div>
+
 </div>
+
+
+
+
+
 {% endblock %}
