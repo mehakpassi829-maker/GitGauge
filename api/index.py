@@ -4,4 +4,4 @@ import os
 # Add your backend folder to Python path
 sys.path.append(os.path.join(os.path.dirname(__file__), '../backend'))
 
-from app.main import app  # import your Flask app
+from backend.app.main import app  # import your Flask app
