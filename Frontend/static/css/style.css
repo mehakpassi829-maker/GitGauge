@@ -5,6 +5,7 @@ a { text-decoration: none; color: inherit; }
 ul, li { list-style: none; margin: 0; padding: 0; }
 img { max-width: 100%; display: block; }
 
+
 :root {
     --bg:      #080d14;
     --bg2:     #0d1520;
@@ -20,7 +21,7 @@ img { max-width: 100%; display: block; }
     --c1: #1D9E75;
     --c2: #378ADD;
     --c3: #00BCD4;
-    --c4: #D4537E;
+    --c4: #ee6e99;
     --c5: #7F77DD;
     --c6: #00897B;
     --mono: 'JetBrains Mono', monospace;

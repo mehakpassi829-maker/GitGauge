@@ -2,12 +2,21 @@ const ANALYZERS = {
     commit:        { label:"Commit Analyzer",        key:"commit_score",        color:"#1D9E75", barId:"commitBar",    elId:"commitScore"         },
     architect:     { label:"Architect Analyzer",     key:"architect_score",     color:"#378ADD", barId:"archBar",      elId:"archScore"           },
     algorithm:     { label:"Algorithm Analyzer",     key:"algorithm_score",     color:"#00BCD4", barId:"techBar",      elId:"techScore"           },
-    collaboration: { label:"Collaboration Analyzer", key:"collaboration_score", color:"#D4537E", barId:"collabBar",    elId:"collaboration_score" },
+    collaboration: { label:"Collaboration Analyzer", key:"collaboration_score", color:"#ee6e99", barId:"collabBar",    elId:"collaboration_score" },
     documentation: { label:"Documentation Analyzer", key:"documentation_score", color:"#7F77DD", barId:"docBar",       elId:"docScore"            },
     developer:     { label:"Developer Analyzer",     key:"developer_score",     color:"#00897B", barId:"devBar",       elId:"growthScore"         },
 };
  
 const METRIC_LABELS = {
+
+
+
+
+
+
+
+
+
     frequency:"Frequency", consistency:"Consistency", active_days:"Active Days",
     msg_quality:"Message Quality", time_dist:"Time Distribution", streak:"Streak",
     folder_structure:"Folder Structure", modularity:"Modularity", dependencies:"Dependencies",
