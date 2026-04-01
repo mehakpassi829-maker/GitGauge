@@ -1,12 +1,12 @@
 from fastapi import APIRouter, HTTPException
-from app.services.github_service import fetch_user_repos, fetch_user_info
-from app.analyzers.commit_analyzer import analyze_commits
-from app.analyzers.architect_analyzer import analyze_architect
-from app.analyzers.algorithm_analyzer import analyze_algorithm
-from app.analyzers.collaboration_analyzer import analyze_collaboration
-from app.analyzers.documentation_analyzer import analyze_documentation
-from app.analyzers.developer_analyzer import analyze_developer
-from app.services.scoring_service import calculate_hireability_score
+from backend.app.services.github_service import fetch_user_repos, fetch_user_info
+from backend.app.analyzers.commit_analyzer import analyze_commits
+from backend.app.analyzers.architect_analyzer import analyze_architect
+from backend.app.analyzers.algorithm_analyzer import analyze_algorithm
+from backend.app.analyzers.collaboration_analyzer import analyze_collaboration
+from backend.app.analyzers.documentation_analyzer import analyze_documentation
+from backend.app.analyzers.developer_analyzer import analyze_developer
+from backend.app.services.scoring_service import calculate_hireability_score
 import asyncio
 
 router = APIRouter()
