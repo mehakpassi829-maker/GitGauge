@@ -1,6 +1,6 @@
 from backend.app.services.github_service import fetch_user_repos, fetch_user_info
 from backend.app.analyzers.commit_analyzer import analyze_commits
-from Backend.app.analyzers.architect_analyzer import analyze_architect
+from backend.app.analyzers.architect_analyzer import analyze_architect
 from backend.app.analyzers.algorithm_analyzer import analyze_algorithm
 from backend.app.analyzers.collaboration_analyzer import analyze_collaboration
 from backend.app.analyzers.documentation_analyzer import analyze_documentation
