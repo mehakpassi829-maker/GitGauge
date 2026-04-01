@@ -8,10 +8,10 @@ import time
 
 app = FastAPI()
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "Frontend", "templates"))
-static_dir = os.path.join(BASE_DIR, "Frontend", "static")
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "..", "Frontend", "templates"))
+static_dir = os.path.join(BASE_DIR, "..", "Frontend", "static")
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 @app.get("/", response_class=HTMLResponse)
