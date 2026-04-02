@@ -6,7 +6,7 @@ Instead of relying only on resumes or GitHub stars, GitGauge extracts meaningful
 
 ---
 
-## 📌 Problem Statement
+## Problem Statement
 
 Recruiters and teams often struggle to evaluate developers accurately.  
 GitHub profiles contain valuable information, but manually analyzing repositories, commits, and project structure is time-consuming and inconsistent.
