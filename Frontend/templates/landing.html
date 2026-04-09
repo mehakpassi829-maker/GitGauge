@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GitGauge AI — Developer Intelligence Platform</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:     #060b11;
+            --bg2:    #0a1220;
+            --bg3:    #0d1828;
+            --text:   #e2e8f0;
+            --muted:  #3d5470;
+            --muted2: #6a85a8;
+            --accent: #00d4a0;
+            --accent2:#00a87e;
+            --mono:   'JetBrains Mono', monospace;
+            --sans:   'Syne', sans-serif;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--sans);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── GRID BACKGROUND ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0,212,160,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,212,160,0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── NAVBAR ── */
+        .nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 48px;
+            background: rgba(6,11,17,0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0,212,160,0.08);
+        }
+
+        .nav-logo {
+            font-family: var(--mono);
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.5px;
+        }
+
+        .nav-logo span { color: var(--accent); }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--muted2);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: var(--accent); }
+
+        .nav-cta {
+            font-family: var(--mono);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 8px 18px;
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .nav-cta:hover {
+            background: var(--accent);
+            color: #000;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 24px 80px;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            font-family: var(--mono);
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--accent);
+            background: rgba(0,212,160,0.08);
+            border: 1px solid rgba(0,212,160,0.2);
+            padding: 6px 16px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 32px;
+            display: inline-block;
+            animation: fadeUp 0.6s ease both;
+        }
+
+        /* ── 3D TITLE ── */
+        .hero-title {
+            font-family: var(--sans);
+            font-size: clamp(52px, 8vw, 96px);
+            font-weight: 800;
+            line-height: 0.95;
+            letter-spacing: -3px;
+            margin-bottom: 28px;
+            animation: fadeUp 0.6s ease 0.1s both;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .title-git {
+            display: block;
+            color: var(--text);
+            text-shadow:
+                0 1px 0 #0d1828,
+                0 2px 0 #0a1220,
+                0 3px 0 #080e18,
+                0 4px 0 #060b14,
+                0 5px 0 #040810,
+                0 6px 20px rgba(0,0,0,0.8),
+                0 0 60px rgba(0,212,160,0.05);
+        }
+
+        .title-gauge {
+            display: block;
+            color: var(--accent);
+            text-shadow:
+                0 1px 0 #00a87e,
+                0 2px 0 #008a68,
+                0 3px 0 #006c52,
+                0 4px 0 #005040,
+                0 5px 0 #003830,
+                0 6px 20px rgba(0,0,0,0.8),
+                0 0 80px rgba(0,212,160,0.3);
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 1px 0 #00a87e, 0 2px 0 #008a68, 0 3px 0 #006c52, 0 4px 0 #005040, 0 5px 0 #003830, 0 6px 20px rgba(0,0,0,0.8), 0 0 80px rgba(0,212,160,0.3); }
+            50% { text-shadow: 0 1px 0 #00a87e, 0 2px 0 #008a68, 0 3px 0 #006c52, 0 4px 0 #005040, 0 5px 0 #003830, 0 6px 20px rgba(0,0,0,0.8), 0 0 120px rgba(0,212,160,0.5); }
+        }
+
+        .hero-sub {
+            font-size: 13px;
+            font-family: var(--mono);
+            color: var(--accent);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            animation: fadeUp 0.6s ease 0.15s both;
+        }
+
+        .hero-desc {
+            font-size: 18px;
+            color: var(--muted2);
+            max-width: 560px;
+            line-height: 1.7;
+            margin-bottom: 48px;
+            animation: fadeUp 0.6s ease 0.2s both;
+        }
+
+        /* ── SEARCH BOX ── */
+        .hero-search {
+            display: flex;
+            gap: 0;
+            max-width: 500px;
+            width: 100%;
+            margin: 0 auto 20px;
+            animation: fadeUp 0.6s ease 0.25s both;
+            position: relative;
+        }
+
+        .hero-search input {
+            flex: 1;
+            font-family: var(--mono);
+            font-size: 14px;
+            padding: 16px 24px;
+            background: var(--bg2);
+            border: 1px solid rgba(0,212,160,0.2);
+            border-right: none;
+            border-radius: 10px 0 0 10px;
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .hero-search input::placeholder { color: var(--muted); }
+        .hero-search input:focus { border-color: var(--accent); }
+
+        .hero-search button {
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 700;
+            padding: 16px 280px;
+            background: var(--accent);
+            color: #000;
+            border: none;
+            /* border-radius: 0 10px 10px 0; */
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .hero-search button:hover { background: var(--accent2); }
+
+        .hero-hint {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--muted);
+            animation: fadeUp 0.6s ease 0.3s both;
+        }
+
+        /* ── STATS ROW ── */
+        .stats-row {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            margin-top: 60px;
+            animation: fadeUp 0.6s ease 0.35s both;
+        }
+
+        .stat-item { text-align: center; }
+
+        .stat-num {
+            font-family: var(--mono);
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent);
+            display: block;
+            line-height: 1;
+        }
+
+        .stat-lbl {
+            font-size: 12px;
+            color: var(--muted2);
+            margin-top: 4px;
+            display: block;
+        }
+
+        .stat-divider {
+            width: 1px;
+            background: rgba(255,255,255,0.06);
+            align-self: stretch;
+        }
+
+        /* ── FEATURES ── */
+        .features {
+            position: relative;
+            z-index: 1;
+            padding: 80px 48px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .features-label {
+            font-family: var(--mono);
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .features-title {
+            font-size: 36px;
+            font-weight: 800;
+            text-align: center;
+            color: var(--text);
+            margin-bottom: 12px;
+            letter-spacing: -1px;
+        }
+
+        .features-desc {
+            font-size: 15px;
+            color: var(--muted2);
+            text-align: center;
+            max-width: 480px;
+            margin: 0 auto 56px;
+            line-height: 1.7;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .feature-card {
+            background: var(--bg2);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px;
+            padding: 28px;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--card-color, var(--accent)), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(255,255,255,0.1);
+            transform: translateY(-3px);
+        }
+
+        .feature-card:hover::before { opacity: 1; }
+
+        .feature-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 18px;
+        }
+
+        .feature-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .feature-desc {
+            font-size: 13px;
+            color: var(--muted2);
+            line-height: 1.6;
+        }
+
+        .feature-tag {
+            display: inline-block;
+            font-family: var(--mono);
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-top: 12px;
+            font-weight: 600;
+        }
+
+        /* ── HOW IT WORKS ── */
+        .how {
+            position: relative;
+            z-index: 1;
+            padding: 60px 48px 80px;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .how-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 48px;
+            letter-spacing: -1px;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .step-num {
+            font-family: var(--mono);
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--accent);
+            background: rgba(0,212,160,0.08);
+            border: 1px solid rgba(0,212,160,0.2);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .step-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .step-desc {
+            font-size: 13px;
+            color: var(--muted2);
+            line-height: 1.6;
+        }
+
+        /* ── CTA BOTTOM ── */
+        .cta-bottom {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 60px 48px 100px;
+            border-top: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .cta-bottom h2 {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 12px;
+            letter-spacing: -1px;
+        }
+
+        .cta-bottom p {
+            font-size: 15px;
+            color: var(--muted2);
+            margin-bottom: 28px;
+        }
+
+        .cta-btn {
+            font-family: var(--sans);
+            font-size: 15px;
+            font-weight: 700;
+            padding: 14px 36px;
+            background: var(--accent);
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-btn:hover {
+            background: var(--accent2);
+            transform: translateY(-2px);
+        }
+
+        /* ── FOOTER ── */
+        .footer {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 24px;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .nav { padding: 16px 20px; }
+            .nav-links { display: none; }
+            .features { padding: 60px 20px; }
+            .features-grid { grid-template-columns: 1fr; }
+            .steps { grid-template-columns: 1fr; }
+            .stats-row { gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+    <div class="nav-logo">Git<span>Gauge</span> <span style="color:var(--muted);font-size:11px;">AI</span></div>
+    <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#how">How it works</a>
+        <a href="/dashboard">Dashboard</a>
+        <a href="#analyze" class="nav-cta">Try Now</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="analyze">
+    <div class="hero-badge">⚡ AI-Powered GitHub Analysis</div>
+
+    <h1 class="hero-title">
+        <span class="title-git">Git</span>
+        <span class="title-gauge">Gauge</span>
+    </h1>
+
+    <p class="hero-sub">Developer Intelligence Platform</p>
+
+    <p class="hero-desc">
+        Stop guessing your skill level. GitGauge analyzes your GitHub profile across 6 intelligence dimensions and generates a real Hireability Score — no resumes, no bias.
+    </p>
+
+    <div class="hero-search" id="heroSearch">
+        
+        <button onclick="goAnalyze()">Analyze →</button>
+    </div>
+
+    <p class="hero-hint">Free · No signup required · Results in seconds</p>
+
+    <div class="stats-row">
+        <div class="stat-item">
+            <span class="stat-num">6</span>
+            <span class="stat-lbl">Analyzers</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+            <span class="stat-num">36</span>
+            <span class="stat-lbl">Sub-metrics</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+            <span class="stat-num">100</span>
+            <span class="stat-lbl">Max Score</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+            <span class="stat-num">0</span>
+            <span class="stat-lbl">Bias</span>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+    <div class="features-label">What we measure</div>
+    <h2 class="features-title">6 Intelligence Analyzers</h2>
+    <p class="features-desc">Every analyzer digs deep into your GitHub data to reveal the real developer behind the profile.</p>
+
+    <div class="features-grid">
+
+        <div class="feature-card" style="--card-color:#1D9E75;">
+            <div class="feature-icon" style="background:rgba(29,158,117,0.1);">📊</div>
+            <div class="feature-name">Commit Analyzer</div>
+            <div class="feature-desc">Evaluates your commit frequency, consistency streaks, message quality, and coding time patterns to reveal your work discipline.</div>
+            <span class="feature-tag" style="background:rgba(29,158,117,0.1);color:#1D9E75;">18% weight</span>
+        </div>
+
+        <div class="feature-card" style="--card-color:#378ADD;">
+            <div class="feature-icon" style="background:rgba(55,138,221,0.1);">🏗️</div>
+            <div class="feature-name">Architect Analyzer</div>
+            <div class="feature-desc">Analyzes folder structure depth, modularity, dependency management, and config handling to assess your system design thinking.</div>
+            <span class="feature-tag" style="background:rgba(55,138,221,0.1);color:#378ADD;">20% weight</span>
+        </div>
+
+        <div class="feature-card" style="--card-color:#00BCD4;">
+            <div class="feature-icon" style="background:rgba(0,188,212,0.1);">⚡</div>
+            <div class="feature-name">Algorithm Analyzer</div>
+            <div class="feature-desc">Detects algorithm usage patterns, data structure complexity, optimization techniques, and edge case handling in your code.</div>
+            <span class="feature-tag" style="background:rgba(0,188,212,0.1);color:#00BCD4;">17% weight</span>
+        </div>
+
+        <div class="feature-card" style="--card-color:#D4537E;">
+            <div class="feature-icon" style="background:rgba(212,83,126,0.1);">🤝</div>
+            <div class="feature-name">Collaboration Analyzer</div>
+            <div class="feature-desc">Measures your pull request quality, acceptance rate, code reviews, issue handling, and open source contributions.</div>
+            <span class="feature-tag" style="background:rgba(212,83,126,0.1);color:#D4537E;">15% weight</span>
+        </div>
+
+        <div class="feature-card" style="--card-color:#7F77DD;">
+            <div class="feature-icon" style="background:rgba(127,119,221,0.1);">📝</div>
+            <div class="feature-name">Documentation Analyzer</div>
+            <div class="feature-desc">Scores README quality, setup guides, code comments, visual aids, and API documentation across all your repositories.</div>
+            <span class="feature-tag" style="background:rgba(127,119,221,0.1);color:#7F77DD;">15% weight</span>
+        </div>
+
+        <div class="feature-card" style="--card-color:#00897B;">
+            <div class="feature-icon" style="background:rgba(0,137,123,0.1);">🚀</div>
+            <div class="feature-name">Developer Analyzer</div>
+            <div class="feature-desc">Tracks your growth trajectory, technology expansion, learning speed, and experimentation rate over your GitHub lifetime.</div>
+            <span class="feature-tag" style="background:rgba(0,137,123,0.1);color:#00897B;">15% weight</span>
+        </div>
+
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+    <h2 class="how-title">How it works</h2>
+    <div class="steps">
+        <div class="step">
+            <div class="step-num">01</div>
+            <div class="step-title">Enter Username</div>
+            <div class="step-desc">Type any GitHub username into the search box. No login or API key required from you.</div>
+        </div>
+        <div class="step">
+            <div class="step-num">02</div>
+            <div class="step-title">AI Analyzes</div>
+            <div class="step-desc">Our 6 analyzers process your repositories, commits, and activity across 36 sub-metrics in real time.</div>
+        </div>
+        <div class="step">
+            <div class="step-num">03</div>
+            <div class="step-title">Get Your Score</div>
+            <div class="step-desc">Receive a Hireability Score from 0–100 with detailed strengths, weaknesses, and improvement suggestions.</div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-bottom">
+    <h2>Ready to know your real score?</h2>
+    <p>Analyze your GitHub profile in seconds — completely free.</p>
+    <a href="#analyze" class="cta-btn" onclick="document.getElementById('heroUsername').focus()">Analyze My Profile →</a>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    Built with ⚡ by the GitGauge team · Powered by GitHub API · No data stored
+</footer>
+
+<script>
+function goAnalyze() {
+    
+    window.location.href = "/dashboard";
+}
+
+document.getElementById("heroUsername").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") goAnalyze();
+});
+
+// Subtle parallax on title
+document.addEventListener("mousemove", function(e) {
+    var x = (e.clientX / window.innerWidth - 0.5) * 10;
+    var y = (e.clientY / window.innerHeight - 0.5) * 10;
+    var title = document.querySelector(".hero-title");
+    if (title) title.style.transform = "rotateY(" + x * 0.5 + "deg) rotateX(" + (-y * 0.3) + "deg)";
+});
+</script>
+
+</body>
+</html>
