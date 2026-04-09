@@ -1,4 +1,4 @@
-# GitGauge 🚀
+# GitGauge 
 
 **GitGauge** is a developer intelligence platform that analyzes a GitHub profile and evaluates a developer’s coding behavior, engineering practices, and growth patterns.
 
@@ -6,7 +6,7 @@ Instead of relying only on resumes or GitHub stars, GitGauge extracts meaningful
 
 ---
 
-## 📌 Problem Statement
+## Problem Statement
 
 Recruiters and teams often struggle to evaluate developers accurately.  
 GitHub profiles contain valuable information, but manually analyzing repositories, commits, and project structure is time-consuming and inconsistent.
