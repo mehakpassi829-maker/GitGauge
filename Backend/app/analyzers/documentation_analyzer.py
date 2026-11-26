@@ -57,3 +57,4 @@ def analyze_documentation(repos):
             "api_docs":       round(api_docs),
         }
     }
+

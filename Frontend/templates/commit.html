@@ -1,4 +1,146 @@
 {% extends "base.html" %}
 {% block content %}
 
+<div class="engine-detail-page" id="commitDetailPage">
+    <!-- Header Section -->
+    <div class="engine-detail-header">
+        <div class="engine-detail-intro">
+            <div class="rules-eyebrow">Intelligence Engine · 18% Weight</div>
+            <h1 class="engine-detail-title">Commit Intelligence</h1>
+            <p class="engine-detail-desc">
+                Evaluates a developer's visible commit activity, consistency streaks, active repository ratio, and commit message discipline across public repositories.
+            </p>
+            <div class="engine-meta-badges">
+                <span class="meta-badge"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Active Cadence</span>
+                <span class="meta-badge"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg> Streak Stability</span>
+                <span class="meta-badge"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/></svg> Conventional Messages</span>
+            </div>
+        </div>
+
+        <div class="engine-score-card">
+            <div class="score-ring-inner">
+                <canvas id="engineScoreCanvas" width="130" height="130"></canvas>
+                <div class="score-center">
+                    <span id="engineScoreValue">--</span>
+                    <small>/ 100</small>
+                </div>
+            </div>
+            <div class="score-lbl">Engine Score</div>
+        </div>
+    </div>
+
+    <!-- Metric Breakdown -->
+    <div class="section-title">Metric Breakdown &amp; Criteria</div>
+    <div class="breakdown-card">
+        <div class="bd-metrics" id="commitMetricBreakdown">
+            <div class="bd-row">
+                <span class="bd-lbl">Consistency</span>
+                <span class="bd-w">25%</span>
+                <div class="bd-bar-wrap"><div class="bd-bar" style="width:85%;background:var(--c1)"></div></div>
+                <span class="bd-val">85/100</span>
+            </div>
+            <div class="bd-row">
+                <span class="bd-lbl">Message Quality</span>
+                <span class="bd-w">20%</span>
+                <div class="bd-bar-wrap"><div class="bd-bar" style="width:78%;background:var(--c1)"></div></div>
+                <span class="bd-val">78/100</span>
+            </div>
+            <div class="bd-row">
+                <span class="bd-lbl">Frequency</span>
+                <span class="bd-w">20%</span>
+                <div class="bd-bar-wrap"><div class="bd-bar" style="width:90%;background:var(--c1)"></div></div>
+                <span class="bd-val">90/100</span>
+            </div>
+            <div class="bd-row">
+                <span class="bd-lbl">Active Days</span>
+                <span class="bd-w">15%</span>
+                <div class="bd-bar-wrap"><div class="bd-bar" style="width:75%;background:var(--c1)"></div></div>
+                <span class="bd-val">75/100</span>
+            </div>
+            <div class="bd-row">
+                <span class="bd-lbl">Streak</span>
+                <span class="bd-w">10%</span>
+                <div class="bd-bar-wrap"><div class="bd-bar" style="width:80%;background:var(--c1)"></div></div>
+                <span class="bd-val">80/100</span>
+            </div>
+            <div class="bd-row">
+                <span class="bd-lbl">Time Distribution</span>
+                <span class="bd-w">10%</span>
+                <div class="bd-bar-wrap"><div class="bd-bar" style="width:82%;background:var(--c1)"></div></div>
+                <span class="bd-val">82/100</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analysis Findings -->
+    <div class="section-title">Automated Analysis Findings</div>
+    <div class="findings-card">
+        <div class="finding-item">
+            <span class="finding-bullet">✦</span>
+            <span>Regular commit distribution observed across active repositories with sustained multi-week consistency.</span>
+        </div>
+        <div class="finding-item">
+            <span class="finding-bullet">✦</span>
+            <span>Commits feature descriptive summaries avoiding uninformative placeholders (e.g. 'update', 'fix').</span>
+        </div>
+        <div class="finding-item">
+            <span class="finding-bullet">✦</span>
+            <span>Development cadence shows healthy pacing during standard working hours.</span>
+        </div>
+    </div>
+
+    <!-- Strengths & Opportunities -->
+    <div class="insights-grid" style="margin-top: 24px;">
+        <div class="insight-card strength-card">
+            <h4>✦ Engine Strengths</h4>
+            <div class="insight-item">
+                <span class="insight-dot" style="background:var(--c1)"></span>
+                <span><strong>High Active Streak</strong> — Continuous weekly contributions over sustained project timelines.</span>
+            </div>
+            <div class="insight-item">
+                <span class="insight-dot" style="background:var(--c1)"></span>
+                <span><strong>Disciplined Commits</strong> — Good semantic clarity in message headers across majority of repositories.</span>
+            </div>
+        </div>
+        <div class="insight-card weakness-card">
+            <h4>↯ Areas to Improve</h4>
+            <div class="insight-item">
+                <span class="insight-dot" style="background:var(--c4)"></span>
+                <span><strong>Dormant Repositories</strong> — Several older repositories have had no activity for over 6 months. Consider archiving.</span>
+            </div>
+            <div class="insight-item">
+                <span class="insight-dot" style="background:var(--c4)"></span>
+                <span><strong>Atomic Commits</strong> — Group related file edits into smaller, independent atomic commits for clearer changelogs.</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Initialize circular engine score canvas
+    document.addEventListener("DOMContentLoaded", function() {
+        var canvas = document.getElementById("engineScoreCanvas");
+        if (canvas) {
+            var ctx = canvas.getContext("2d");
+            var cx = 65, cy = 65, r = 52;
+            ctx.clearRect(0, 0, 130, 130);
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, 0, Math.PI * 2);
+            ctx.strokeStyle = "#191c24";
+            ctx.lineWidth = 8;
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, -Math.PI / 2, Math.PI * 1.1);
+            ctx.strokeStyle = "#5bb89a";
+            ctx.lineWidth = 8;
+            ctx.lineCap = "round";
+            ctx.stroke();
+
+            var valEl = document.getElementById("engineScoreValue");
+            if (valEl) valEl.textContent = "84";
+        }
+    });
+</script>
+
 {% endblock %}

@@ -1,5 +1,5 @@
 import requests
-from backend.app.config import GITHUB_API_URL, GITHUB_TOKEN
+from app.config import GITHUB_API_URL, GITHUB_TOKEN
 
 
 def fetch_repositories(username: str):
@@ -31,3 +31,4 @@ def fetch_repositories(username: str):
         }
         for repo in repos_data
     ]
+

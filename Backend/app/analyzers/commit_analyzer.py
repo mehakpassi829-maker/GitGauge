@@ -92,3 +92,4 @@ def analyze_commits(repos):
             "time_pattern": time_pattern,
         }
     }
+

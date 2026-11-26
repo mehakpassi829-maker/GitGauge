@@ -19,3 +19,4 @@ def calculate_hireability_score(commit, architect, algorithm, collaboration, doc
         ("C", "Early Stage")
     )
     return {"score": min(score, 100), "grade": grade, "label": label}
+

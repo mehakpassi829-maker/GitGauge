@@ -1,683 +1,302 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>GitGauge AI — Developer Intelligence Platform</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-        :root {
-            --bg:     #060b11;
-            --bg2:    #0a1220;
-            --bg3:    #0d1828;
-            --text:   #e2e8f0;
-            --muted:  #3d5470;
-            --muted2: #6a85a8;
-            --accent: #00d4a0;
-            --accent2:#00a87e;
-            --mono:   'JetBrains Mono', monospace;
-            --sans:   'Syne', sans-serif;
-        }
-
-        html { scroll-behavior: smooth; }
-
-        body {
-            font-family: var(--sans);
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* ── GRID BACKGROUND ── */
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image:
-                linear-gradient(rgba(0,212,160,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,212,160,0.03) 1px, transparent 1px);
-            background-size: 60px 60px;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* ── NAVBAR ── */
-        .nav {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 18px 48px;
-            background: rgba(6,11,17,0.8);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(0,212,160,0.08);
-        }
-
-        .nav-logo {
-            font-family: var(--mono);
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text);
-            letter-spacing: -0.5px;
-        }
-
-        .nav-logo span { color: var(--accent); }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 32px;
-        }
-
-        .nav-links a {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--muted2);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .nav-links a:hover { color: var(--accent); }
-
-        .nav-cta {
-            font-family: var(--mono);
-            font-size: 12px;
-            font-weight: 700;
-            padding: 8px 18px;
-            background: transparent;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            border-radius: 6px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-
-        .nav-cta:hover {
-            background: var(--accent);
-            color: #000;
-        }
-
-        /* ── HERO ── */
-        .hero {
-            position: relative;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 120px 24px 80px;
-            z-index: 1;
-        }
-
-        .hero-badge {
-            font-family: var(--mono);
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--accent);
-            background: rgba(0,212,160,0.08);
-            border: 1px solid rgba(0,212,160,0.2);
-            padding: 6px 16px;
-            border-radius: 20px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 32px;
-            display: inline-block;
-            animation: fadeUp 0.6s ease both;
-        }
-
-        /* ── 3D TITLE ── */
-        .hero-title {
-            font-family: var(--sans);
-            font-size: clamp(52px, 8vw, 96px);
-            font-weight: 800;
-            line-height: 0.95;
-            letter-spacing: -3px;
-            margin-bottom: 28px;
-            animation: fadeUp 0.6s ease 0.1s both;
-            transform-style: preserve-3d;
-            perspective: 1000px;
-        }
-
-        .title-git {
-            display: block;
-            color: var(--text);
-            text-shadow:
-                0 1px 0 #0d1828,
-                0 2px 0 #0a1220,
-                0 3px 0 #080e18,
-                0 4px 0 #060b14,
-                0 5px 0 #040810,
-                0 6px 20px rgba(0,0,0,0.8),
-                0 0 60px rgba(0,212,160,0.05);
-        }
-
-        .title-gauge {
-            display: block;
-            color: var(--accent);
-            text-shadow:
-                0 1px 0 #00a87e,
-                0 2px 0 #008a68,
-                0 3px 0 #006c52,
-                0 4px 0 #005040,
-                0 5px 0 #003830,
-                0 6px 20px rgba(0,0,0,0.8),
-                0 0 80px rgba(0,212,160,0.3);
-            animation: glow 3s ease-in-out infinite;
-        }
-
-        @keyframes glow {
-            0%, 100% { text-shadow: 0 1px 0 #00a87e, 0 2px 0 #008a68, 0 3px 0 #006c52, 0 4px 0 #005040, 0 5px 0 #003830, 0 6px 20px rgba(0,0,0,0.8), 0 0 80px rgba(0,212,160,0.3); }
-            50% { text-shadow: 0 1px 0 #00a87e, 0 2px 0 #008a68, 0 3px 0 #006c52, 0 4px 0 #005040, 0 5px 0 #003830, 0 6px 20px rgba(0,0,0,0.8), 0 0 120px rgba(0,212,160,0.5); }
-        }
-
-        .hero-sub {
-            font-size: 13px;
-            font-family: var(--mono);
-            color: var(--accent);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 16px;
-            animation: fadeUp 0.6s ease 0.15s both;
-        }
-
-        .hero-desc {
-            font-size: 18px;
-            color: var(--muted2);
-            max-width: 560px;
-            line-height: 1.7;
-            margin-bottom: 48px;
-            animation: fadeUp 0.6s ease 0.2s both;
-        }
-
-        /* ── SEARCH BOX ── */
-        .hero-search {
-            display: flex;
-            gap: 0;
-            max-width: 500px;
-            width: 100%;
-            margin: 0 auto 20px;
-            animation: fadeUp 0.6s ease 0.25s both;
-            position: relative;
-        }
-
-        .hero-search input {
-            flex: 1;
-            font-family: var(--mono);
-            font-size: 14px;
-            padding: 16px 24px;
-            background: var(--bg2);
-            border: 1px solid rgba(0,212,160,0.2);
-            border-right: none;
-            border-radius: 10px 0 0 10px;
-            color: var(--text);
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .hero-search input::placeholder { color: var(--muted); }
-        .hero-search input:focus { border-color: var(--accent); }
-
-        .hero-search button {
-            font-family: var(--sans);
-            font-size: 14px;
-            font-weight: 700;
-            padding: 16px 280px;
-            background: var(--accent);
-            color: #000;
-            border: none;
-            /* border-radius: 0 10px 10px 0; */
-            cursor: pointer;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-
-        .hero-search button:hover { background: var(--accent2); }
-
-        .hero-hint {
-            font-family: var(--mono);
-            font-size: 11px;
-            color: var(--muted);
-            animation: fadeUp 0.6s ease 0.3s both;
-        }
-
-        /* ── STATS ROW ── */
-        .stats-row {
-            display: flex;
-            gap: 40px;
-            justify-content: center;
-            margin-top: 60px;
-            animation: fadeUp 0.6s ease 0.35s both;
-        }
-
-        .stat-item { text-align: center; }
-
-        .stat-num {
-            font-family: var(--mono);
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--accent);
-            display: block;
-            line-height: 1;
-        }
-
-        .stat-lbl {
-            font-size: 12px;
-            color: var(--muted2);
-            margin-top: 4px;
-            display: block;
-        }
-
-        .stat-divider {
-            width: 1px;
-            background: rgba(255,255,255,0.06);
-            align-self: stretch;
-        }
-
-        /* ── FEATURES ── */
-        .features {
-            position: relative;
-            z-index: 1;
-            padding: 80px 48px;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .features-label {
-            font-family: var(--mono);
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--accent);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            text-align: center;
-            margin-bottom: 12px;
-        }
-
-        .features-title {
-            font-size: 36px;
-            font-weight: 800;
-            text-align: center;
-            color: var(--text);
-            margin-bottom: 12px;
-            letter-spacing: -1px;
-        }
-
-        .features-desc {
-            font-size: 15px;
-            color: var(--muted2);
-            text-align: center;
-            max-width: 480px;
-            margin: 0 auto 56px;
-            line-height: 1.7;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-        }
-
-        .feature-card {
-            background: var(--bg2);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 14px;
-            padding: 28px;
-            transition: all 0.2s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--card-color, var(--accent)), transparent);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .feature-card:hover {
-            border-color: rgba(255,255,255,0.1);
-            transform: translateY(-3px);
-        }
-
-        .feature-card:hover::before { opacity: 1; }
-
-        .feature-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 16px;
-            font-size: 18px;
-        }
-
-        .feature-name {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--text);
-            margin-bottom: 8px;
-        }
-
-        .feature-desc {
-            font-size: 13px;
-            color: var(--muted2);
-            line-height: 1.6;
-        }
-
-        .feature-tag {
-            display: inline-block;
-            font-family: var(--mono);
-            font-size: 10px;
-            padding: 3px 8px;
-            border-radius: 4px;
-            margin-top: 12px;
-            font-weight: 600;
-        }
-
-        /* ── HOW IT WORKS ── */
-        .how {
-            position: relative;
-            z-index: 1;
-            padding: 60px 48px 80px;
-            max-width: 900px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .how-title {
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--text);
-            margin-bottom: 48px;
-            letter-spacing: -1px;
-        }
-
-        .steps {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-        }
-
-        .step {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .step-num {
-            font-family: var(--mono);
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--accent);
-            background: rgba(0,212,160,0.08);
-            border: 1px solid rgba(0,212,160,0.2);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .step-title {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--text);
-        }
-
-        .step-desc {
-            font-size: 13px;
-            color: var(--muted2);
-            line-height: 1.6;
-        }
-
-        /* ── CTA BOTTOM ── */
-        .cta-bottom {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            padding: 60px 48px 100px;
-            border-top: 1px solid rgba(255,255,255,0.04);
-        }
-
-        .cta-bottom h2 {
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--text);
-            margin-bottom: 12px;
-            letter-spacing: -1px;
-        }
-
-        .cta-bottom p {
-            font-size: 15px;
-            color: var(--muted2);
-            margin-bottom: 28px;
-        }
-
-        .cta-btn {
-            font-family: var(--sans);
-            font-size: 15px;
-            font-weight: 700;
-            padding: 14px 36px;
-            background: var(--accent);
-            color: #000;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .cta-btn:hover {
-            background: var(--accent2);
-            transform: translateY(-2px);
-        }
-
-        /* ── FOOTER ── */
-        .footer {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            padding: 24px;
-            border-top: 1px solid rgba(255,255,255,0.04);
-            font-family: var(--mono);
-            font-size: 11px;
-            color: var(--muted);
-        }
-
-        /* ── ANIMATIONS ── */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(24px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ── RESPONSIVE ── */
-        @media (max-width: 768px) {
-            .nav { padding: 16px 20px; }
-            .nav-links { display: none; }
-            .features { padding: 60px 20px; }
-            .features-grid { grid-template-columns: 1fr; }
-            .steps { grid-template-columns: 1fr; }
-            .stats-row { gap: 20px; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitGauge – Developer Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/gitgauge.css?v=8">
 </head>
 <body>
 
-<!-- NAV -->
-<nav class="nav">
-    <div class="nav-logo">Git<span>Gauge</span> <span style="color:var(--muted);font-size:11px;">AI</span></div>
-    <div class="nav-links">
-        <a href="#features">Features</a>
-        <a href="#how">How it works</a>
-        <a href="/dashboard">Dashboard</a>
-        <a href="#analyze" class="nav-cta">Try Now</a>
-    </div>
+<!-- ── NAV ── -->
+<nav class="landing-nav">
+  <a href="/landing" class="landing-logo">
+    <span class="logo-mark">
+      <svg viewBox="0 0 24 24"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg>
+    </span>
+    <span class="logo-text">GitGauge<span class="logo-accent">.</span></span>
+  </a>
+  <div class="nav-links">
+    <a class="nav-link" href="#methodology" onclick="smoothScroll('methodology')">Methodology</a>
+    <a class="nav-link" href="/">Workspace</a>
+    <a class="nav-btn" href="/">Sign in</a>
+  </div>
 </nav>
 
-<!-- HERO -->
-<section class="hero" id="analyze">
-    <div class="hero-badge">⚡ AI-Powered GitHub Analysis</div>
+<!-- ── HERO ── -->
+<section id="hero">
+  <div class="hero-wrap">
+    <!-- Left -->
+    <div class="hero-left">
+      <div class="hero-badge"><span></span>Public data · Transparent rules</div>
+      <h1 class="hero-title">Developer signals, measured with restraint.</h1>
+      <p class="hero-desc">GitGauge turns a bounded public GitHub snapshot into six rule-based reports: commits, architecture, algorithms, documentation, collaboration, and growth.</p>
 
-    <h1 class="hero-title">
-        <span class="title-git">Git</span>
-        <span class="title-gauge">Gauge</span>
-    </h1>
+      <div class="hero-error" id="heroError">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="heroErrorMsg">Please enter a valid GitHub username.</span>
+      </div>
 
-    <p class="hero-sub">Developer Intelligence Platform</p>
+      <form class="hero-search-wrap" id="landingForm" onsubmit="landingSubmit(event)">
+        <div class="hero-search-box">
+          <svg viewBox="0 0 24 24"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+          <input type="text" id="landingUsername" placeholder="github-username" autocomplete="off" spellcheck="false" maxlength="39">
+        </div>
+        <button type="submit" class="btn-hero" id="heroBtn">
+          Analyze Profile
+          <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
+      </form>
 
-    <p class="hero-desc">
-        Stop guessing your skill level. GitGauge analyzes your GitHub profile across 6 intelligence dimensions and generates a real Hireability Score — no resumes, no bias.
-    </p>
-
-    <div class="hero-search" id="heroSearch">
-        
-        <button onclick="goAnalyze()">Analyze →</button>
+      <div class="hero-hints">
+        <span>Guest analysis · Public repositories only</span>
+        <span class="hint-dot"></span>
+        <span>GitHub passwords are never requested.</span>
+      </div>
     </div>
 
-    <p class="hero-hint">Free · No signup required · Results in seconds</p>
-
-    <div class="stats-row">
-        <div class="stat-item">
-            <span class="stat-num">6</span>
-            <span class="stat-lbl">Analyzers</span>
+    <!-- Right card -->
+    <div class="rules-card">
+      <div class="rules-head">
+        <div>
+          <div class="rules-label">How scores are formed</div>
+          <h2 class="rules-heading">No sample scores. Just the rules.</h2>
         </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-            <span class="stat-num">36</span>
-            <span class="stat-lbl">Sub-metrics</span>
+        <span class="rules-tag">Live data only</span>
+      </div>
+      <div class="rules-list">
+        <div class="rule-row">
+          <div class="rule-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><line x1="3" x2="9" y1="12" y2="12"/><line x1="15" x2="21" y1="12" y2="12"/></svg></div>
+          <div class="rule-content">
+            <strong>Commit</strong>
+            <span>Active days and descriptive commit messages</span>
+          </div>
         </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-            <span class="stat-num">100</span>
-            <span class="stat-lbl">Max Score</span>
+        <div class="rule-row">
+          <div class="rule-icon"><svg viewBox="0 0 24 24"><path d="m12 2 9 5-9 5-9-5z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg></div>
+          <div class="rule-content">
+            <strong>Architecture</strong>
+            <span>Nested paths, tests, manifests, and CI</span>
+          </div>
         </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-            <span class="stat-num">0</span>
-            <span class="stat-lbl">Bias</span>
+        <div class="rule-row">
+          <div class="rule-icon"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+          <div class="rule-content">
+            <strong>Algorithms</strong>
+            <span>Data structures, complexity patterns, logic depth</span>
+          </div>
         </div>
+        <div class="rule-row">
+          <div class="rule-icon"><svg viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg></div>
+          <div class="rule-content">
+            <strong>Documentation</strong>
+            <span>README presence, size, setup, usage, contribution</span>
+          </div>
+        </div>
+        <div class="rule-row">
+          <div class="rule-icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div class="rule-content">
+            <strong>Collaboration</strong>
+            <span>Pull requests, issues, and distinct commit authors</span>
+          </div>
+        </div>
+        <div class="rule-row">
+          <div class="rule-icon"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+          <div class="rule-content">
+            <strong>Growth</strong>
+            <span>Language breadth, repo age, and technology diversity</span>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </section>
 
-<!-- FEATURES -->
-<section class="features" id="features">
-    <div class="features-label">What we measure</div>
-    <h2 class="features-title">6 Intelligence Analyzers</h2>
-    <p class="features-desc">Every analyzer digs deep into your GitHub data to reveal the real developer behind the profile.</p>
+<hr class="section-divider">
 
-    <div class="features-grid">
-
-        <div class="feature-card" style="--card-color:#1D9E75;">
-            <div class="feature-icon" style="background:rgba(29,158,117,0.1);">📊</div>
-            <div class="feature-name">Commit Analyzer</div>
-            <div class="feature-desc">Evaluates your commit frequency, consistency streaks, message quality, and coding time patterns to reveal your work discipline.</div>
-            <span class="feature-tag" style="background:rgba(29,158,117,0.1);color:#1D9E75;">18% weight</span>
-        </div>
-
-        <div class="feature-card" style="--card-color:#378ADD;">
-            <div class="feature-icon" style="background:rgba(55,138,221,0.1);">🏗️</div>
-            <div class="feature-name">Architect Analyzer</div>
-            <div class="feature-desc">Analyzes folder structure depth, modularity, dependency management, and config handling to assess your system design thinking.</div>
-            <span class="feature-tag" style="background:rgba(55,138,221,0.1);color:#378ADD;">20% weight</span>
-        </div>
-
-        <div class="feature-card" style="--card-color:#00BCD4;">
-            <div class="feature-icon" style="background:rgba(0,188,212,0.1);">⚡</div>
-            <div class="feature-name">Algorithm Analyzer</div>
-            <div class="feature-desc">Detects algorithm usage patterns, data structure complexity, optimization techniques, and edge case handling in your code.</div>
-            <span class="feature-tag" style="background:rgba(0,188,212,0.1);color:#00BCD4;">17% weight</span>
-        </div>
-
-        <div class="feature-card" style="--card-color:#D4537E;">
-            <div class="feature-icon" style="background:rgba(212,83,126,0.1);">🤝</div>
-            <div class="feature-name">Collaboration Analyzer</div>
-            <div class="feature-desc">Measures your pull request quality, acceptance rate, code reviews, issue handling, and open source contributions.</div>
-            <span class="feature-tag" style="background:rgba(212,83,126,0.1);color:#D4537E;">15% weight</span>
-        </div>
-
-        <div class="feature-card" style="--card-color:#7F77DD;">
-            <div class="feature-icon" style="background:rgba(127,119,221,0.1);">📝</div>
-            <div class="feature-name">Documentation Analyzer</div>
-            <div class="feature-desc">Scores README quality, setup guides, code comments, visual aids, and API documentation across all your repositories.</div>
-            <span class="feature-tag" style="background:rgba(127,119,221,0.1);color:#7F77DD;">15% weight</span>
-        </div>
-
-        <div class="feature-card" style="--card-color:#00897B;">
-            <div class="feature-icon" style="background:rgba(0,137,123,0.1);">🚀</div>
-            <div class="feature-name">Developer Analyzer</div>
-            <div class="feature-desc">Tracks your growth trajectory, technology expansion, learning speed, and experimentation rate over your GitHub lifetime.</div>
-            <span class="feature-tag" style="background:rgba(0,137,123,0.1);color:#00897B;">15% weight</span>
-        </div>
-
+<!-- ── HOW IT WORKS ── -->
+<section class="landing-section">
+  <div class="landing-section-label">Process</div>
+  <h2 class="landing-section-title">How GitGauge works</h2>
+  <p class="landing-section-desc">Three steps to a complete developer intelligence report — no account required for guest analysis.</p>
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-num">01</div>
+      <h4>Enter a GitHub username</h4>
+      <p>Type any public GitHub username into the search bar. No login or OAuth token required for guest analysis.</p>
     </div>
-</section>
-
-<!-- HOW IT WORKS -->
-<section class="how" id="how">
-    <h2 class="how-title">How it works</h2>
-    <div class="steps">
-        <div class="step">
-            <div class="step-num">01</div>
-            <div class="step-title">Enter Username</div>
-            <div class="step-desc">Type any GitHub username into the search box. No login or API key required from you.</div>
-        </div>
-        <div class="step">
-            <div class="step-num">02</div>
-            <div class="step-title">AI Analyzes</div>
-            <div class="step-desc">Our 6 analyzers process your repositories, commits, and activity across 36 sub-metrics in real time.</div>
-        </div>
-        <div class="step">
-            <div class="step-num">03</div>
-            <div class="step-title">Get Your Score</div>
-            <div class="step-desc">Receive a Hireability Score from 0–100 with detailed strengths, weaknesses, and improvement suggestions.</div>
-        </div>
+    <div class="step-card">
+      <div class="step-num">02</div>
+      <h4>We fetch public data</h4>
+      <p>GitGauge pulls a bounded snapshot of public repositories, commit metadata, and contribution signals from the GitHub API.</p>
     </div>
+    <div class="step-card">
+      <div class="step-num">03</div>
+      <h4>Six rule-based reports</h4>
+      <p>Each intelligence engine applies deterministic rules — no machine learning, no guessing — and returns a scored report.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">04</div>
+      <h4>Read the insights</h4>
+      <p>Browse per-engine breakdowns, metric cards, strengths, improvement areas, and actionable recommendations.</p>
+    </div>
+  </div>
 </section>
 
-<!-- CTA -->
-<section class="cta-bottom">
-    <h2>Ready to know your real score?</h2>
-    <p>Analyze your GitHub profile in seconds — completely free.</p>
-    <a href="#analyze" class="cta-btn" onclick="document.getElementById('heroUsername').focus()">Analyze My Profile →</a>
+<hr class="section-divider">
+
+<!-- ── ENGINES ── -->
+<section class="landing-section" id="methodology">
+  <div class="landing-section-label">Intelligence Engines</div>
+  <h2 class="landing-section-title">Six dimensions of developer signal</h2>
+  <p class="landing-section-desc">Every engine maps to a distinct aspect of engineering quality. Weights are fixed and transparent.</p>
+  <div class="engines-grid">
+    <div class="engine-card">
+      <div class="engine-card-weight">Weight: 18%</div>
+      <h4>Commit Intelligence</h4>
+      <p>Analyses commit cadence, active-day ratio, weekly streak stability, and descriptive message quality across all repositories.</p>
+      <div class="engine-card-metrics">
+        <span class="engine-metric-tag">Frequency</span>
+        <span class="engine-metric-tag">Consistency</span>
+        <span class="engine-metric-tag">Message quality</span>
+        <span class="engine-metric-tag">Streaks</span>
+      </div>
+    </div>
+    <div class="engine-card">
+      <div class="engine-card-weight">Weight: 20%</div>
+      <h4>Architecture Intelligence</h4>
+      <p>Examines directory depth, modular separation of concerns, dependency manifests, test coverage indicators, and CI configuration.</p>
+      <div class="engine-card-metrics">
+        <span class="engine-metric-tag">Modularity</span>
+        <span class="engine-metric-tag">Test presence</span>
+        <span class="engine-metric-tag">CI/CD</span>
+        <span class="engine-metric-tag">Dependencies</span>
+      </div>
+    </div>
+    <div class="engine-card">
+      <div class="engine-card-weight">Weight: 17%</div>
+      <h4>Algorithm Intelligence</h4>
+      <p>Detects algorithmic patterns, data structure usage, computational complexity indicators, and logic sophistication in repository names and descriptions.</p>
+      <div class="engine-card-metrics">
+        <span class="engine-metric-tag">Data structures</span>
+        <span class="engine-metric-tag">Complexity</span>
+        <span class="engine-metric-tag">Logic depth</span>
+      </div>
+    </div>
+    <div class="engine-card">
+      <div class="engine-card-weight">Weight: 15%</div>
+      <h4>Documentation Intelligence</h4>
+      <p>Scores README completeness, setup instructions, usage examples, architecture summaries, and contribution guidelines presence.</p>
+      <div class="engine-card-metrics">
+        <span class="engine-metric-tag">README quality</span>
+        <span class="engine-metric-tag">Setup docs</span>
+        <span class="engine-metric-tag">Contributing guide</span>
+      </div>
+    </div>
+    <div class="engine-card">
+      <div class="engine-card-weight">Weight: 15%</div>
+      <h4>Collaboration Intelligence</h4>
+      <p>Measures pull request engagement, issue participation, code review activity, and multi-contributor project involvement.</p>
+      <div class="engine-card-metrics">
+        <span class="engine-metric-tag">Pull requests</span>
+        <span class="engine-metric-tag">Issues</span>
+        <span class="engine-metric-tag">Multi-author</span>
+      </div>
+    </div>
+    <div class="engine-card">
+      <div class="engine-card-weight">Weight: 15%</div>
+      <h4>Developer Growth</h4>
+      <p>Tracks language breadth, technology diversity, repository age distribution, and evidence of continuous learning over time.</p>
+      <div class="engine-card-metrics">
+        <span class="engine-metric-tag">Language count</span>
+        <span class="engine-metric-tag">Tech diversity</span>
+        <span class="engine-metric-tag">Repo age span</span>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- FOOTER -->
-<footer class="footer">
-    Built with ⚡ by the GitGauge team · Powered by GitHub API · No data stored
+<hr class="section-divider">
+
+<!-- ── WHY DIFFERENT ── -->
+<section class="landing-section">
+  <div class="landing-section-label">Philosophy</div>
+  <h2 class="landing-section-title">Why GitGauge is different</h2>
+  <p class="landing-section-desc">We deliberately chose constraints over completeness. Determinism over ML. Rules over rankings.</p>
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="why-card-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <h4>No black boxes</h4>
+      <p>Every score is derived from documented, deterministic rules. You can read the methodology and verify any result yourself.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+      <h4>Public data only</h4>
+      <p>GitGauge never requests GitHub credentials or private repository access. Only public signals, transparently collected.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+      <h4>Not a hiring prediction</h4>
+      <p>These scores measure specific GitHub activity patterns. They are not a holistic evaluation of developer skill or hiring fitness.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-card-icon"><svg viewBox="0 0 24 24"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-6"/></svg></div>
+      <h4>Bounded snapshot</h4>
+      <p>Analysis covers a fixed window of public repository data. Scores reflect recent public activity, not lifetime output.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ── CTA ── -->
+<section class="cta-section">
+  <h2 class="landing-section-title" style="margin-bottom:12px">Ready to see your signals?</h2>
+  <p>Enter any public GitHub username and get a full six-engine report in seconds.</p>
+  <div class="cta-btn-wrap">
+    <a href="/" class="btn-hero">Open Workspace <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+    <a href="#methodology" class="btn-gray" onclick="smoothScroll('methodology')">Read Methodology</a>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer class="landing-footer-bar">
+  <div>
+    <a href="/landing">GitGauge</a>
+    <span style="margin:0 10px;opacity:.4">·</span>
+    <span>Developer Intelligence Platform</span>
+  </div>
+  <div style="display:flex;gap:18px">
+    <a href="/landing">Home</a>
+    <a href="#methodology" onclick="smoothScroll('methodology')">Methodology</a>
+    <a href="/">Workspace</a>
+  </div>
+  <div>Public GitHub signals · Rule-based, bounded snapshot · Not a hiring prediction</div>
 </footer>
 
 <script>
-function goAnalyze() {
-    
-    window.location.href = "/dashboard";
+function smoothScroll(id) {
+  const el = document.getElementById(id);
+  if (el) { el.scrollIntoView({ behavior: 'smooth' }); }
 }
-
-document.getElementById("heroUsername").addEventListener("keydown", function(e) {
-    if (e.key === "Enter") goAnalyze();
-});
-
-// Subtle parallax on title
-document.addEventListener("mousemove", function(e) {
-    var x = (e.clientX / window.innerWidth - 0.5) * 10;
-    var y = (e.clientY / window.innerHeight - 0.5) * 10;
-    var title = document.querySelector(".hero-title");
-    if (title) title.style.transform = "rotateY(" + x * 0.5 + "deg) rotateX(" + (-y * 0.3) + "deg)";
-});
+function landingSubmit(e) {
+  e.preventDefault();
+  const btn = document.getElementById('heroBtn');
+  const err = document.getElementById('heroError');
+  const u = document.getElementById('landingUsername').value.trim();
+  err.classList.remove('visible');
+  if (!u || !/^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,37}[a-zA-Z0-9])?$/.test(u)) {
+    document.getElementById('heroErrorMsg').textContent = 'Please enter a valid GitHub username (letters, numbers, hyphens).';
+    err.classList.add('visible');
+    return;
+  }
+  btn.classList.add('loading');
+  btn.innerHTML = '<span style="display:inline-block;width:16px;height:16px;border:2px solid rgba(0,0,0,.3);border-top-color:#000;border-radius:50%;animation:spin .7s linear infinite"></span> Analyzing...';
+  window.location.href = '/?username=' + encodeURIComponent(u);
+}
 </script>
-
 </body>
 </html>

@@ -55,3 +55,4 @@ def analyze_algorithm(repos):
             "edge_cases":       round(edge_cases),
         }
     }
+

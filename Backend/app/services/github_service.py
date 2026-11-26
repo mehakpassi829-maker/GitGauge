@@ -17,3 +17,4 @@ async def fetch_user_info(username: str):
     async with httpx.AsyncClient() as client:
         r = await client.get(f"{GITHUB_API}/users/{username}", headers=HEADERS)
         return r.json() if r.status_code == 200 else {}
+

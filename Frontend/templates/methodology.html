@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="methodology-page">
+    <div class="methodology-header">
+        <div class="rules-eyebrow">Methodology &amp; Documentation</div>
+        <h1>Deterministic signals, zero guesswork.</h1>
+        <p>GitGauge operates on transparent, explainable algorithms rather than black-box evaluations. Every score is bounded, mathematically reproducible, and derived strictly from publicly observable GitHub repository metadata.</p>
+    </div>
+
+    <!-- Overview section -->
+    <div class="methodology-section">
+        <h2>Hireability Score Formulation</h2>
+        <p>The composite Hireability Score (0–100) is a weighted sum of six independent intelligence analyzers designed to reflect balanced software engineering signals:</p>
+        <div class="bd-formula">
+            Hireability = (Commit × 18%) + (Architecture × 20%) + (Algorithm × 17%) + (Collaboration × 15%) + (Documentation × 15%) + (Growth × 15%)
+        </div>
+    </div>
+
+    <!-- Engine 1: Commit Intelligence -->
+    <div class="engine-card">
+        <div class="engine-header">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><line x1="3" x2="9" y1="12" y2="12"/><line x1="15" x2="21" y1="12" y2="12"/></svg>
+            <span>1. Commit Intelligence (Weight: 18%)</span>
+        </div>
+        <div class="engine-metrics-list">
+            <p>Assesses the developer's visible commit consistency, cadence, and discipline across their repository catalog.</p>
+            <div class="methodology-metric">
+                <strong>Consistency (25%):</strong> Evaluates regular weekly commit distribution over the repository's active lifespan.
+            </div>
+            <div class="methodology-metric">
+                <strong>Frequency (20%):</strong> Assesses sustained commit volume relative to project scope and active weeks.
+            </div>
+            <div class="methodology-metric">
+                <strong>Message Quality (20%):</strong> Rewards descriptive, conventional commit headers over vague keywords (e.g., 'fix', 'update').
+            </div>
+            <div class="methodology-metric">
+                <strong>Active Days (15%):</strong> Ratio of active repositories pushed within the preceding 30 days.
+            </div>
+            <div class="methodology-metric">
+                <strong>Streak &amp; Time Distribution (20%):</strong> Measures work continuity and balanced development patterns without burnout spikes.
+            </div>
+        </div>
+    </div>
+
+    <!-- Engine 2: Architecture Intelligence -->
+    <div class="engine-card">
+        <div class="engine-header">
+            <svg viewBox="0 0 24 24"><path d="m12 2 9 5-9 5-9-5z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg>
+            <span>2. Architecture Intelligence (Weight: 20%)</span>
+        </div>
+        <div class="engine-metrics-list">
+            <p>Analyzes repository structure, project modularity, and dependency management signals.</p>
+            <div class="methodology-metric">
+                <strong>Modularity (25%):</strong> Evaluates separation of application components and source code organization.
+            </div>
+            <div class="methodology-metric">
+                <strong>Folder Structure (20%):</strong> Detects structured directory hierarchies, domain layering, and clean file organization.
+            </div>
+            <div class="methodology-metric">
+                <strong>Scalability (20%):</strong> Recognizes community validation, watchers, and fork signals indicating structural utility.
+            </div>
+            <div class="methodology-metric">
+                <strong>Dependencies (15%):</strong> Verifies proper licensing, package manifests, and dependency isolation.
+            </div>
+            <div class="methodology-metric">
+                <strong>Reusability &amp; Config (20%):</strong> Rewards topic tagging, homepage configurations, and deployment specifications.
+            </div>
+        </div>
+    </div>
+
+    <!-- Engine 3: Algorithm Intelligence -->
+    <div class="engine-card">
+        <div class="engine-header">
+            <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            <span>3. Algorithm Intelligence (Weight: 17%)</span>
+        </div>
+        <div class="engine-metrics-list">
+            <p>Identifies visible algorithmic and computational problem-solving signals.</p>
+            <div class="methodology-metric">
+                <strong>Algorithm Usage (25%):</strong> Detects implementation of data structures, sorting, dynamic programming, and algorithm patterns.
+            </div>
+            <div class="methodology-metric">
+                <strong>Language Complexity &amp; Efficiency (20%):</strong> Weights systems languages (Rust, C++, Go) and typed ecosystems that require explicit memory/data management.
+            </div>
+            <div class="methodology-metric">
+                <strong>Logic Complexity (20%):</strong> Evaluates non-trivial codebase sizing and multi-tier algorithmic components.
+            </div>
+            <div class="methodology-metric">
+                <strong>Data Structures &amp; Optimization (35%):</strong> Measures algorithmic breadth, structured data representations, and performance awareness.
+            </div>
+        </div>
+    </div>
+
+    <!-- Engine 4: Documentation Intelligence -->
+    <div class="engine-card">
+        <div class="engine-header">
+            <svg viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
+            <span>4. Documentation Intelligence (Weight: 15%)</span>
+        </div>
+        <div class="engine-metrics-list">
+            <p>Evaluates the quality, thoroughness, and communication clarity of project documentation.</p>
+            <div class="methodology-metric">
+                <strong>README Quality (30%):</strong> Inspects presence, depth, and explanatory clarity of repository overview files.
+            </div>
+            <div class="methodology-metric">
+                <strong>Setup Guides (20%):</strong> Evaluates installation instructions, prerequisite guidelines, and runnable examples.
+            </div>
+            <div class="methodology-metric">
+                <strong>Code Comments &amp; Descriptions (20%):</strong> Inspects repository descriptive headers and documentation intent.
+            </div>
+            <div class="methodology-metric">
+                <strong>Visuals &amp; Structure (30%):</strong> Rewards architecture diagrams, topic categorizations, and API reference links.
+            </div>
+        </div>
+    </div>
+
+    <!-- Engine 5: Collaboration Intelligence -->
+    <div class="engine-card">
+        <div class="engine-header">
+            <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>5. Collaboration Intelligence (Weight: 15%)</span>
+        </div>
+        <div class="engine-metrics-list">
+            <p>Measures observable collaboration, community engagement, and peer interaction patterns.</p>
+            <div class="methodology-metric">
+                <strong>Acceptance Rate &amp; Pull Requests (45%):</strong> Pull request activity, upstream merges, and code contribution flows.
+            </div>
+            <div class="methodology-metric">
+                <strong>Code Reviews &amp; Peer Interaction (20%):</strong> Peer review signals and community recognition.
+            </div>
+            <div class="methodology-metric">
+                <strong>Issues &amp; Open Source Contributions (35%):</strong> Issue management, public gists, and collaborative open-source repositories.
+            </div>
+        </div>
+    </div>
+
+    <!-- Engine 6: Developer Growth -->
+    <div class="engine-card">
+        <div class="engine-header">
+            <svg viewBox="0 0 24 24"><path d="m12 3 1.9 5.8L20 10l-6.1 1.2L12 17l-1.9-5.8L4 10l6.1-1.2z"/></svg>
+            <span>6. Developer Growth (Weight: 15%)</span>
+        </div>
+        <div class="engine-metrics-list">
+            <p>Tracks evolutionary progress, technical breadth, and expansion across a developer's GitHub journey.</p>
+            <div class="methodology-metric">
+                <strong>Growth Trajectory (25%):</strong> Expansion of project complexity and repository creation pace over time.
+            </div>
+            <div class="methodology-metric">
+                <strong>Technology Expansion (20%):</strong> Number of unique languages, frameworks, and programming paradigms mastered.
+            </div>
+            <div class="methodology-metric">
+                <strong>Complexity Increase &amp; Learning Speed (30%):</strong> Progression toward larger, more demanding software architectures.
+            </div>
+            <div class="methodology-metric">
+                <strong>Consistency &amp; Experimentation (25%):</strong> Sustained multi-year curiosity and technology diversification.
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
